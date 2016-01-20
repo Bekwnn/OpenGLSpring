@@ -1,0 +1,6 @@
+#ifndef CLOTH_GL_SCENE_HPP
+#define CLOTH_GL_SCENE_HPP 
+
+#pragma once
+
+
