@@ -1,0 +1,10 @@
+set(SOURCE_LIST
+	"${ASSIGNMENT_SOURCE_ROOT}/Cube.cpp"
+	"${ASSIGNMENT_SOURCE_ROOT}/Cloth.cpp"
+	"${ASSIGNMENT_SOURCE_ROOT}/ClothScene.cpp"
+	"${ASSIGNMENT_SOURCE_ROOT}/SpringScene.cpp"
+	"${ASSIGNMENT_SOURCE_ROOT}/ObjectController.cpp"
+	"${ASSIGNMENT_SOURCE_ROOT}/Grid.cpp"
+	"${ASSIGNMENT_SOURCE_ROOT}/MayaCamera.cpp"
+	"${ASSIGNMENT_SOURCE_ROOT}/main.cpp"
+	PARENT_SCOPE)

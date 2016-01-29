@@ -28,8 +28,8 @@ Cloth::Cloth()
 
 	std::vector<ShaderInfo> shaders
 	{
-		ShaderInfo{ GL_VERTEX_SHADER, shaderDir + "triangle.vs.glsl" },
-			ShaderInfo{ GL_FRAGMENT_SHADER, shaderDir + "triangle.fs.glsl" }
+		ShaderInfo{ GL_VERTEX_SHADER, shaderDir + "cloth.vs.glsl" },
+		ShaderInfo{ GL_FRAGMENT_SHADER, shaderDir + "cloth.fs.glsl" }
 	};
 
 	mShaders.push_back(ShaderPointer(new Shader));
@@ -38,7 +38,8 @@ Cloth::Cloth()
 
 	mShaders[0]->linkShaders();
 
-	glVectexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glEnableVertexAttribArray(0);
 
 	mShaders[0]->disableShaders();
 }
@@ -49,7 +50,7 @@ Cloth::~Cloth()
 	glDeleteBuffers(1, &mBuffer);
 }
 
-void Triangle::renderGeometry(atlas::math::Matrix4 projection, atlas::math::Matrix4 view)
+void Cloth::renderGeometry(atlas::math::Matrix4 projection, atlas::math::Matrix4 view)
 {
 	UNUSED(projection);
 	UNUSED(view);
@@ -60,6 +61,4 @@ void Triangle::renderGeometry(atlas::math::Matrix4 projection, atlas::math::Matr
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	mShaders[0]->disableShaders();
-}
-		
 }
