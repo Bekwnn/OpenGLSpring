@@ -6,6 +6,7 @@
 #include <atlas/math/Vector.hpp>
 #include <atlas/utils/Time.hpp>
 
+// Keeps track of velocity and acceleration vectors and sums them for each time step
 class ObjectController {
 public:
 	ObjectController();

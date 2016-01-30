@@ -4,7 +4,7 @@
 #include <atlas/gl/Shader.hpp>
 #include <atlas/core/Macros.hpp>
 
-Cube::Cube(atlas::math::Vector &pos, atlas::math::Vector &size)
+Cube::Cube(atlas::math::Vector pos, atlas::math::Vector size)
 {
 	USING_ATLAS_GL_NS;
 	USING_ATLAS_MATH_NS;
@@ -142,8 +142,6 @@ void Cube::updateGeometry(atlas::utils::Time const& t)
 	objController->addVelocity(Vector(2.f, 0.f, 0.f)* t.deltaTime);
 
 	mPosition = mPosition + objController->updateController(t);
-
-	printf("mPosition: (%f, %f, %f)", mPosition.x, mPosition.y, mPosition.z);
 
 	mModel = glm::translate(Matrix4(1.0f), mPosition);	
 }

@@ -8,6 +8,8 @@
 #include "Cube.hpp"
 #include "MayaCamera.hpp"
 #include "Grid.hpp"
+#include "PistonSpring.hpp"
+#include "AngularSpring.hpp"
 
 class SpringScene : public atlas::utils::Scene
 {
@@ -31,7 +33,11 @@ private:
 
 	Grid mGrid;
 	MayaCamera mCamera;
+
 	Cube* mCube;
+	Cube* mCube2;
+	PistonSpring mPistonSpring;
+	AngularSpring mAngularSpring;
 };
 
 #endif

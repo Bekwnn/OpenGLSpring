@@ -11,8 +11,10 @@
 class Cube : public atlas::utils::Geometry
 {
 public:
-	Cube(atlas::math::Vector &pos, atlas::math::Vector &size);
+	Cube(atlas::math::Vector pos, atlas::math::Vector size);
 	~Cube();
+
+	atlas::math::Vector getPosition() { return mPosition; }
 
 	void renderGeometry(atlas::math::Matrix4 projection, atlas::math::Matrix4 view) override;
 	void updateGeometry(atlas::utils::Time const& t) override;

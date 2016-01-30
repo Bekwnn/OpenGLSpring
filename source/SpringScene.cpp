@@ -10,7 +10,11 @@ SpringScene::SpringScene() :
 	glEnable(GL_DEPTH_TEST);
 
 	USING_ATLAS_MATH_NS;
-	mCube = new Cube(Vector(0.f, 0.f, 2.4f), Vector(1.f, 1.f, 1.f));
+	mCube = new Cube(Vector(0.f, 0.f, 10.f), Vector(2.f, 2.f, 2.f));
+	mCube2 = new Cube(Vector(0.f, 0.f, 5.f), Vector(2.f, 2.f, 2.f));
+
+	mPistonSpring = PistonSpring(2.f, 1.f, 0.01f);
+	mAngularSpring = AngularSpring(Vector(0.f, 1.f, 0.f), 1.0f, 0.f);
 }
 
 SpringScene::~SpringScene()
@@ -130,6 +134,7 @@ void SpringScene::renderScene()
 	mView = mCamera.getCameraMatrix();
 	mGrid.renderGeometry(mProjection, mView);
 	mCube->renderGeometry(mProjection, mView);
+	mCube2->renderGeometry(mProjection, mView);
 }
 
 void SpringScene::updateScene(double time)
@@ -143,7 +148,28 @@ void SpringScene::updateScene(double time)
 
 		mTime.deltaTime *= 2.0f;
 
+		//get the spring force and apply it to the object (letting mass = 1.0)
+		USING_ATLAS_MATH_NS;
+		Vector springForce = mPistonSpring.GetForce(mCube->getPosition(), Vector(0.f, 0.f, 0.f), mCube->objController->getVelocity(), Vector(0.f, 0.f, 0.f));
+		mCube->objController->addVelocity(springForce);
+
+		Vector angularForce = mAngularSpring.GetForce(mCube2->getPosition(), Vector(0.f, 0.f, 0.f), mCube->objController->getVelocity());
+		mCube2->objController->addVelocity(angularForce);
+
+		//cube will spiral further and further away, calculate future position and offset to prevent that:
+		Vector futurePos = mCube2->getPosition()
+			+ mCube2->objController->getVelocity()*mTime.deltaTime
+			+ mCube2->objController->getAccel()*mTime.deltaTime*mTime.deltaTime
+			+ mCube2->objController->getMovement();
+		mCube2->objController->addMove(normalize(futurePos)* (length(mCube2->getPosition()) - length(futurePos)));
+
+
+		printf("angular force: (%f, %f, %f)\n", angularForce.x, angularForce.y, angularForce.z);
+		printf("future pos: (%f, %f, %f)\n", futurePos.x, futurePos.y, futurePos.z);
+		printf("cube2 pos: (%f, %f, %f)\n", mCube2->getPosition().x, mCube2->getPosition().y, mCube2->getPosition().z);
+
 		// Tell our cube to update itself.
 		mCube->updateGeometry(mTime);
+		mCube2->updateGeometry(mTime);
 	}
 }
