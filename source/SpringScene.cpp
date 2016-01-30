@@ -172,7 +172,6 @@ void SpringScene::updateScene(double time)
 		//AUTHOR'S NOTE: this constraint system works is a lot cleaner for the piston one... and for the cloth mesh later.
 		//               I mainly designed it with those in mind.
 
-		printf("angular force: (%f, %f, %f)\n", angularForce.x, angularForce.y, angularForce.z);
 		printf("piston cube pos: (%f, %f, %f)\n", mCube->getPosition().x, mCube->getPosition().y, mCube->getPosition().z);
 		printf("angular cube pos: (%f, %f, %f)\n", mCube2->getPosition().x, mCube2->getPosition().y, mCube2->getPosition().z);
 
