@@ -28,4 +28,4 @@ A constraint which holds the spring parameters. GetForce takes the position of a
 
 The spring constraints are handled in sceneUpdate(). The ObjectController is handled in updateGeometry().
 
-The angular spring is a bit jerky and naturally comes to a stop... but it seems to work? (If you have some idea what's wrong with it I'd be interested to know).
+As a word of caution, AngularSpring uses some janky vector math... accurate! but janky. I explained it in comments.
