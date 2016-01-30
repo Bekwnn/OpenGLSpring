@@ -146,8 +146,6 @@ void SpringScene::updateScene(double time)
 		mTime.totalTime += (float)time;
 		mTime.currentTime = (float)time;
 
-		mTime.deltaTime *= 2.0f;
-
 		//get the spring force and apply it to the object (letting mass = 1.0)
 		USING_ATLAS_MATH_NS;
 		Vector springForce = mPistonSpring.GetForce(mCube->getPosition(), Vector(0.f, 0.f, 0.f), mCube->objController->getVelocity(), Vector(0.f, 0.f, 0.f));
@@ -163,10 +161,8 @@ void SpringScene::updateScene(double time)
 			+ mCube2->objController->getMovement();
 		mCube2->objController->addMove(normalize(futurePos)* (length(mCube2->getPosition()) - length(futurePos)));
 
-
-		printf("angular force: (%f, %f, %f)\n", angularForce.x, angularForce.y, angularForce.z);
-		printf("future pos: (%f, %f, %f)\n", futurePos.x, futurePos.y, futurePos.z);
-		printf("cube2 pos: (%f, %f, %f)\n", mCube2->getPosition().x, mCube2->getPosition().y, mCube2->getPosition().z);
+		printf("piston cube pos: (%f, %f, %f)\n", mCube->getPosition().x, mCube->getPosition().y, mCube->getPosition().z);
+		printf("angular cube pos: (%f, %f, %f)\n", mCube2->getPosition().x, mCube2->getPosition().y, mCube2->getPosition().z);
 
 		// Tell our cube to update itself.
 		mCube->updateGeometry(mTime);

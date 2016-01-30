@@ -21,7 +21,7 @@ atlas::math::Vector AngularSpring::GetForce(atlas::math::Vector position, atlas:
 	USING_ATLAS_MATH_NS;
 	//we want to get the vector normal to the plane represented by the resting pos and our object's pos
 	Vector orthoPlaneNorm;
-	if (dot(restingDirection, anchorPosition - position) != 1.f)
+	if (abs(dot(restingDirection, normalize(anchorPosition - position))) != 1.f)
 		orthoPlaneNorm = cross(restingDirection, position - anchorPosition);
 	else return Vector(0.f, 0.f, 0.f); //at resting position, apply no force
 
