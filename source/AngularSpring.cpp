@@ -33,8 +33,12 @@ atlas::math::Vector AngularSpring::GetForce(atlas::math::Vector position, atlas:
 	Vector normRestingDir = normalize(restingDirection);
 	Vector normRelativePos = normalize(position - anchorPosition);
 
-	return velDirection *
+	//testing whether finalForce should be reversed ( the above cross product stuff causes inconsistent direction )
+	Vector finalForce = velDirection *
 		(springConstant * cosf(dot(normRelativePos, normRestingDir)) -
-			dot(normalize(velocity), velDirection)*length(velocity) * cosf(dot(normRelativePos, normRestingDir)) );
+			damping*dot(normalize(velocity), velDirection)*length(velocity) * cosf(dot(normRelativePos, normRestingDir)));
+	if (dot(normalize(finalForce), normRestingDir) < 0.f) finalForce = -finalForce;
+
+	return finalForce;
 }
 

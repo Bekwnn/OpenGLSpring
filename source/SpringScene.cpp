@@ -14,7 +14,7 @@ SpringScene::SpringScene() :
 	mCube2 = new Cube(Vector(0.f, 0.f, 5.f), Vector(2.f, 2.f, 2.f));
 
 	mPistonSpring = PistonSpring(2.f, 1.f, 0.01f);
-	mAngularSpring = AngularSpring(Vector(0.f, 1.f, 0.f), 1.0f, 0.f);
+	mAngularSpring = AngularSpring(Vector(0.f, 1.f, 0.f), 1.0f, 0.1f);
 }
 
 SpringScene::~SpringScene()
@@ -152,6 +152,14 @@ void SpringScene::updateScene(double time)
 		mCube->objController->addVelocity(springForce);
 
 		Vector angularForce = mAngularSpring.GetForce(mCube2->getPosition(), Vector(0.f, 0.f, 0.f), mCube->objController->getVelocity());
+
+		//going to reset the velocity in directions non-orthogonal to the "surface" the angular spring is meant to rotate on
+		//do that by getting the component of the velocity in the direction of the surface normal and subtracting it
+		Vector oldVelocity = mCube2->objController->getVelocity();
+		Vector removeVelocity = dot(oldVelocity, normalize(mCube2->getPosition()))*normalize(mCube2->getPosition());
+		mCube2->objController->resetVelocity();
+		mCube2->objController->addVelocity(oldVelocity - removeVelocity);
+
 		mCube2->objController->addVelocity(angularForce);
 
 		//cube will spiral further and further away, calculate future position and offset to prevent that:
@@ -161,6 +169,10 @@ void SpringScene::updateScene(double time)
 			+ mCube2->objController->getMovement();
 		mCube2->objController->addMove(normalize(futurePos)* (length(mCube2->getPosition()) - length(futurePos)));
 
+		//AUTHOR'S NOTE: this constraint system works is a lot cleaner for the piston one... and for the cloth mesh later.
+		//               I mainly designed it with those in mind.
+
+		printf("angular force: (%f, %f, %f)\n", angularForce.x, angularForce.y, angularForce.z);
 		printf("piston cube pos: (%f, %f, %f)\n", mCube->getPosition().x, mCube->getPosition().y, mCube->getPosition().z);
 		printf("angular cube pos: (%f, %f, %f)\n", mCube2->getPosition().x, mCube2->getPosition().y, mCube2->getPosition().z);
 
