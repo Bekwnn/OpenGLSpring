@@ -5,9 +5,10 @@
 
 #include <atlas/utils/Scene.hpp>
 
-#include "Cube.hpp"
+#include "Cloth.hpp"
 #include "MayaCamera.hpp"
 #include "Grid.hpp"
+#include "PistonSpring.hpp"
 
 class ClothScene : public atlas::utils::Scene
 {
@@ -32,7 +33,10 @@ private:
 
 	Grid mGrid;
 	MayaCamera mCamera;
-	Cube* mCube;
+	Cloth* mCloth;
+	PistonSpring structuralSpring;
+	PistonSpring shearSpring;
+	PistonSpring bendSpring;
 };
 
 #endif

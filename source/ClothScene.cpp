@@ -1,6 +1,7 @@
 #include "ClothScene.hpp"
 #include <atlas/core/GLFW.hpp>
 #include <atlas/core/Macros.hpp>
+#include <iostream>
 
 ClothScene::ClothScene() :
 	mIsPlaying(false),
@@ -8,13 +9,18 @@ ClothScene::ClothScene() :
 {
 	glEnable(GL_DEPTH_TEST);
 
+	std::cout << "scene constructor" << std::endl;
+
 	USING_ATLAS_MATH_NS;
-	mCube = new Cube(Vector(0.f, 0.f, 1.f), Vector(1.f, 1.f, 1.f));
+	structuralSpring = PistonSpring(1.f, 0.1f, 0.1f);
+	shearSpring = PistonSpring(sqrt(2.f), 0.1f, 0.1f);
+	bendSpring = PistonSpring(2.f, 0.1f, 0.1f);
+	mCloth = new Cloth(Vector(0.f, 5.f, 0.f), 5, 5, TOPLEFTRIGHT);
 }
 
 ClothScene::~ClothScene()
 {
-	delete mCube;
+
 }
 
 void ClothScene::renderScene()
@@ -26,7 +32,7 @@ void ClothScene::renderScene()
 
 	mView = mCamera.getCameraMatrix();
 	mGrid.renderGeometry(mProjection, mView);
-	mCube->renderGeometry(mProjection, mView);
+	mCloth->renderGeometry(mProjection, mView);
 }
 
 void ClothScene::updateScene(double time)
@@ -41,7 +47,7 @@ void ClothScene::updateScene(double time)
 		mTime.deltaTime *= 2.0f;
 
 		// Tell our cube to update itself.
-		mCube->updateGeometry(mTime);
+		mCloth->updateGeometry(mTime);
 	}
 }
 
@@ -59,7 +65,7 @@ void ClothScene::keyPressEvent(int key, int scancode, int action, int mods)
 			break;
 
 		case GLFW_KEY_C:
-			mCube->resetGeometry();
+			mCloth->resetGeometry();
 			break;
 
 		case GLFW_KEY_SPACE:

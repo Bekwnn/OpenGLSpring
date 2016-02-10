@@ -6,7 +6,7 @@
 int main()
 {
 	APPLICATION.createWindow(400, 400, "OpenGL");
-	APPLICATION.addScene(new SpringScene);
+	APPLICATION.addScene(new ClothScene);
 	APPLICATION.runApplication();
 
 	return 0;
