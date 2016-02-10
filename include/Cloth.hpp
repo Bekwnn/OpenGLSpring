@@ -28,6 +28,8 @@ private:
 	GLuint mVao;
 	GLuint mVertexBuffer;
 	EPinType pinType;
+	int xverts;
+	int yverts;
 };
 
 #endif

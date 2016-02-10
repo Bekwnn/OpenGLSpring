@@ -15,7 +15,7 @@ ClothScene::ClothScene() :
 	structuralSpring = PistonSpring(1.f, 0.1f, 0.1f);
 	shearSpring = PistonSpring(sqrt(2.f), 0.1f, 0.1f);
 	bendSpring = PistonSpring(2.f, 0.1f, 0.1f);
-	mCloth = new Cloth(Vector(0.f, 5.f, 0.f), 5, 5, TOPLEFTRIGHT);
+	mCloth = new Cloth(Vector(0.f, 5.f, 0.f), 6, 6, TOPLEFTRIGHT);
 }
 
 ClothScene::~ClothScene()

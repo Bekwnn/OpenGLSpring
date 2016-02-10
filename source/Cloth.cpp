@@ -6,7 +6,9 @@
 #include <atlas/core/Macros.hpp>
 
 Cloth::Cloth(atlas::math::Vector pos, int xverts, int yverts, EPinType pinType) :
-	pinType(pinType)
+	pinType(pinType),
+	xverts(xverts),
+	yverts(yverts)
 {
 	USING_ATLAS_GL_NS;
 	USING_ATLAS_MATH_NS;
@@ -42,7 +44,7 @@ Cloth::Cloth(atlas::math::Vector pos, int xverts, int yverts, EPinType pinType) 
 	{
 		for (int j = 0; j < yverts-1; j++)
 		{
-			int indexoffset = 6 * (i*yverts + j);
+			int indexoffset = 6 * (i*(yverts-1) + j);
 			//triangle 1
 			vertexBufferData[indexoffset] = vertices[i][j];
 			vertexBufferData[indexoffset +1] = vertices[i+1][j];
@@ -51,6 +53,7 @@ Cloth::Cloth(atlas::math::Vector pos, int xverts, int yverts, EPinType pinType) 
 			vertexBufferData[indexoffset +3] = vertices[i][j+1];
 			vertexBufferData[indexoffset +4] = vertices[i+1][j];
 			vertexBufferData[indexoffset +5] = vertices[i+1][j+1];
+			printf("%d\n", indexoffset);
 		}
 	}
 
@@ -102,7 +105,7 @@ void Cloth::renderGeometry(atlas::math::Matrix4 projection, atlas::math::Matrix4
 	glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-	glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
+	glDrawArrays(GL_TRIANGLES, 0, 2*(xverts-1)*(yverts-1) * 3);
 
 	glDisableVertexAttribArray(0);
 
