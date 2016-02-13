@@ -67,13 +67,13 @@ void MayaCamera::mouseDrag(atlas::math::Point2 const& point)
 
     switch (mImpl->movement)
     {
-    case CameraMovements::DOLLY:
+    case CameraMovements::DOLLY: // zoom
         mImpl->dolly -= 0.0008f * deltaX;
         mImpl->dollyMatrix = 
             translate(Matrix4(1.0), Vector(0, 0, -1.0f * mImpl->dolly));
         break;
 
-    case CameraMovements::TUMBLE:
+    case CameraMovements::TUMBLE: // rotate around
         mImpl->tumbleVector.x += 0.005f * deltaY;
         mImpl->tumbleVector.y += 0.005f * deltaX;
         mImpl->tumbleMatrix =
@@ -81,7 +81,7 @@ void MayaCamera::mouseDrag(atlas::math::Point2 const& point)
             rotate(mat4(1.0), radians(mImpl->tumbleVector.y), vec3(0, 1, 0));
         break;
 
-    case CameraMovements::TRACK:
+    case CameraMovements::TRACK: // pan
         mImpl->trackVector.x += 0.0005f * deltaX;
         mImpl->trackVector.y -= 0.0005f * deltaY;
         mImpl->trackMatrix = translate(mat4(1.0), mImpl->trackVector);

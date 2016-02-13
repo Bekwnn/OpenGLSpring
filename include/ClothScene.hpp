@@ -8,7 +8,6 @@
 #include "Cloth.hpp"
 #include "MayaCamera.hpp"
 #include "Grid.hpp"
-#include "PistonSpring.hpp"
 
 class ClothScene : public atlas::utils::Scene
 {
@@ -34,9 +33,6 @@ private:
 	Grid mGrid;
 	MayaCamera mCamera;
 	Cloth* mCloth;
-	PistonSpring structuralSpring;
-	PistonSpring shearSpring;
-	PistonSpring bendSpring;
 };
 
 #endif

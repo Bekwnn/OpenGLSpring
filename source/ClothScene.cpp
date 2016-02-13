@@ -12,10 +12,7 @@ ClothScene::ClothScene() :
 	std::cout << "scene constructor" << std::endl;
 
 	USING_ATLAS_MATH_NS;
-	structuralSpring = PistonSpring(1.f, 0.1f, 0.1f);
-	shearSpring = PistonSpring(sqrt(2.f), 0.1f, 0.1f);
-	bendSpring = PistonSpring(2.f, 0.1f, 0.1f);
-	mCloth = new Cloth(Vector(0.f, 5.f, 0.f), 6, 6, TOPLEFTRIGHT);
+	mCloth = new Cloth(Vector(0.f, 10.f, 0.f), 25, 25, TOPALL);
 }
 
 ClothScene::~ClothScene()

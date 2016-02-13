@@ -5,6 +5,7 @@
 
 #include <atlas/utils/Camera.hpp>
 #include <memory>
+#include <vector>
 
 class MayaCamera : public atlas::utils::Camera
 {
@@ -19,9 +20,15 @@ public:
     void resetCamera() override;
     atlas::math::Matrix4 getCameraMatrix() override;
 
+	std::vector<atlas::math::Vector> waypoints;
+	std::vector<float> transitionDurations;
+
 private:
     struct MayaCameraImpl;
     std::unique_ptr<MayaCameraImpl> mImpl;
+	bool bIsPlaying;
+	int waypointIndex;
+	float curCurveParamT;
 };
 
 #endif

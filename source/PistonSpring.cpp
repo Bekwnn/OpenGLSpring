@@ -25,18 +25,30 @@ atlas::math::Vector PistonSpring::GetForce(atlas::math::Vector position, atlas::
 	//       v is relative velocity of the two bodies
 
 	USING_ATLAS_MATH_NS;
-	Vector posDiff = position - anchorPosition; //vec points from position to anchor
+	Vector posDiff = anchorPosition - position; //vec points from position to anchor
 
 	//want to get the velocity magnitude in the direction from our object to the anchor
 	//velDiffDot is positive when heading towards anchor
-	float velDiffDot = 0.f;
-	if (velocity - anchorVelocity != Vector(0.f, 0.f, 0.f))
-		velDiffDot = dot((velocity - anchorVelocity), posDiff);
+	float velDiffDot = dot((velocity - anchorVelocity), normalize(posDiff));
 
 	// delta distance = (restingLength - posDiff magnitude) * (posDiff unit vec)
 	// velocity relative to spring = (velDiffDot) * (posDiff unit vec)
-	return (springConstant)*((restingLength - length(posDiff))*normalize(posDiff))
-		- damping*(velDiffDot*normalize(posDiff));
+	Vector part1 = (springConstant)*((restingLength - length(posDiff))*normalize(posDiff));
+	Vector part2 = damping*(velDiffDot*normalize(posDiff));
+	if (velDiffDot != 0.f)
+	{
+		/*
+		printf("delta length: %f\n", restingLength - length(posDiff));
+		printf("velocity: (%f, %f, %f)\n", velocity.x, velocity.y, velocity.z);
+		printf("anchor velocity : (%f, %f, %f)\n", anchorVelocity.x, anchorVelocity.y, anchorVelocity.z);
+		printf("veldiffdot %f\n", velDiffDot);
+		printf("part1 (%f, %f, %f)\n", part1.x, part1.y, part1.z);
+		printf("part2 (%f, %f, %f)\n", part2.x, part2.y, part2.z);
+
+		printf("!");
+		*/
+	}
+	return -part1 - part2;
 
 }
 

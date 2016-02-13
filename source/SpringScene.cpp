@@ -10,10 +10,10 @@ SpringScene::SpringScene() :
 	glEnable(GL_DEPTH_TEST);
 
 	USING_ATLAS_MATH_NS;
-	mCube = new Cube(Vector(0.f, 0.f, 10.f), Vector(2.f, 2.f, 2.f));
+	mCube = new Cube(Vector(0.f, -10.f, 0.f), Vector(2.f, 2.f, 2.f));
 	mCube2 = new Cube(Vector(0.f, 0.f, 5.f), Vector(2.f, 2.f, 2.f));
 
-	mPistonSpring = PistonSpring(2.f, 1.f, 0.01f);
+	mPistonSpring = PistonSpring(5.f, 1.f, 0.01f);
 	mAngularSpring = AngularSpring(Vector(0.f, 1.f, 0.f), 1.0f, 0.1f);
 }
 
