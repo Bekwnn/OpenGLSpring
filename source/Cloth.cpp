@@ -16,15 +16,14 @@ Cloth::Cloth(atlas::math::Vector pos, int xverts, int yverts, EPinType pinType) 
 	glGenVertexArrays(1, &mVao);
 	glBindVertexArray(mVao);
 
-	std::cout << "cloth constructor" << std::endl;
-
 	//build vertexData
-	//(reason I'm using std::vector is that VS compiler doesn't allow for arrays undefined at compile time)
+	//(reason I'm using std::vector is that MSVS compiler doesn't allow for arrays undefined at compile time)
 	Vector topleftpos = pos - Vector((xverts-1) / 2.f, -(yverts-1) / 2.f, 0.f);
 
 	vertexData.resize(xverts);
 	vertexVelocities.resize(xverts);
 
+	//iterates down then right
 	for (int i = 0; i < xverts; i++)
 	{
 		vertexData[i].resize(yverts);
@@ -34,17 +33,11 @@ Cloth::Cloth(atlas::math::Vector pos, int xverts, int yverts, EPinType pinType) 
 		{
 			vertexVelocities[i][j] = Vector(0.f, 0.f, 0.f);
 			vertexData[i][j] = topleftpos + Vector(i, -j, 0.f);
-			printf("vertex %d: (%f, %f, %f)\n", i*yverts + j, vertexData[i][j].x, vertexData[i][j].y, vertexData[i][j].z);
 		}
 	}
 
-
-	std::cout << "vertexData built" << std::endl;
-
 	//build faces
 	std::vector<Vector> vertexBufferData = BuildFaces();
-
-	std::cout << "faces built" << std::endl;
 
 	glGenBuffers(1, &mVertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
@@ -81,6 +74,7 @@ Cloth::~Cloth()
 	glDeleteBuffers(1, &mVertexBuffer);
 }
 
+// builds vertex face buffer from vertex data every frame
 std::vector<atlas::math::Vector> Cloth::BuildFaces()
 {
 	std::vector<atlas::math::Vector> vertexBufferData;
@@ -104,6 +98,7 @@ std::vector<atlas::math::Vector> Cloth::BuildFaces()
 	return vertexBufferData;
 }
 
+//tells whether to "continue" a vertex based on pinning mode
 bool Cloth::SkipVert(int i, int j)
 {
 	switch (pinType)
@@ -167,8 +162,8 @@ void Cloth::updateGeometry(atlas::utils::Time const & t)
 
 			sumForces[i][j] = Vector(0.f, 0.f, 0.f);
 
-			//gravity
-			sumForces[i][j] += Vector(0.f, -1.f, sinf(t.currentTime)); //arbitrary fake gravity constant
+			// y component adds some gravity while z component adds "wind"
+			sumForces[i][j] += Vector(0.f, -1.f, sinf(t.currentTime));
 
 			//STRUCTURAL SPRINGS
 			//left (i-1)
@@ -202,6 +197,7 @@ void Cloth::updateGeometry(atlas::utils::Time const & t)
 		}
 	}
 
+	//add the sum of the spring forces to velocity and then iterate by the velocity
 	for (int i = 0; i < xverts; i++)
 	{
 		for (int j = 0; j < yverts; j++)

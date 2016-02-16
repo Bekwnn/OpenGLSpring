@@ -9,10 +9,17 @@ ClothScene::ClothScene() :
 {
 	glEnable(GL_DEPTH_TEST);
 
-	std::cout << "scene constructor" << std::endl;
-
 	USING_ATLAS_MATH_NS;
 	mCloth = new Cloth(Vector(0.f, 10.f, 0.f), 25, 25, TOPALL);
+
+	mCamera.waypoints.push_back(Vector(40.f, 10.f, 40.f));
+	mCamera.waypoints.push_back(Vector(-40.f, 20.f, 40.f));
+	mCamera.waypoints.push_back(Vector(-40.f, 30.f, -40.f));
+	mCamera.waypoints.push_back(Vector(40.f, 40.f, -40.f));
+	
+	for (int i = 0; i < mCamera.waypoints.size(); i++)
+		mCamera.transitionDurations.push_back(5.f);
+
 }
 
 ClothScene::~ClothScene()
@@ -43,8 +50,9 @@ void ClothScene::updateScene(double time)
 
 		mTime.deltaTime *= 2.0f;
 
-		// Tell our cube to update itself.
+		// Tell our cloth to update itself.
 		mCloth->updateGeometry(mTime);
+		mCamera.updateCameraRail(mTime);
 	}
 }
 
@@ -74,6 +82,7 @@ void ClothScene::keyPressEvent(int key, int scancode, int action, int mods)
 			{
 				glfwSetTime(mLastTime);
 				mIsPlaying = !mIsPlaying;
+				mCamera.bIsPlaying = mIsPlaying;
 			}
 
 		default:

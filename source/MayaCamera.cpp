@@ -1,5 +1,7 @@
 #include "MayaCamera.hpp"
 
+#include <iostream>
+
 struct MayaCamera::MayaCameraImpl
 {
     MayaCameraImpl() :
@@ -41,18 +43,55 @@ struct MayaCamera::MayaCameraImpl
     atlas::math::Matrix4 dollyMatrix;
     atlas::math::Matrix4 tumbleMatrix;
     atlas::math::Matrix4 trackMatrix;
+
+	// spline movement
+	atlas::math::Vector position;
+	glm::quat rotation;
+	atlas::math::Matrix4 positionMatrix;
+	atlas::math::Matrix4 rotationMatrix;
 };
 
 MayaCamera::MayaCamera() :
-    mImpl(new MayaCameraImpl)
+    mImpl(new MayaCameraImpl),
+	bIsPlaying(false),
+	waypointIndex(0),
+	curCurveTime(0.f)
 { }
 
 MayaCamera::~MayaCamera()
 { }
 
-void MayaCamera::mouseDown(atlas::math::Point2 const& point, 
+// update call for spline movement
+void MayaCamera::updateCameraRail(atlas::utils::Time const & t)
+{
+	USING_ATLAS_MATH_NS;
+	USING_GLM_NS;
+
+	if (!bIsPlaying) return;
+
+	//update time and waypoint parameters
+	curCurveTime += t.deltaTime;
+	if (curCurveTime > transitionDurations[waypointIndex])
+	{
+		curCurveTime -= transitionDurations[waypointIndex];
+		waypointIndex++;
+		if (waypointIndex > waypoints.size() - 1) waypointIndex = 0;
+	}
+
+	Vector lastCameraPos = mImpl->position;
+	mImpl->position = getHermitePos(waypointIndex, (curCurveTime/transitionDurations[waypointIndex]), 1.f);
+	mImpl->positionMatrix = translate(Matrix4(1.f), mImpl->position - lastCameraPos);
+
+	//camera always looks at the origin
+	mImpl->rotationMatrix = glm::lookAt(mImpl->position, Vector(0.f, 0.f, 0.f), Vector(0.f, 1.f, 0.f));
+
+}
+
+void MayaCamera::mouseDown(atlas::math::Point2 const& point,
     CameraMovements movement)
 {
+	if (bIsPlaying) return;
+
     mImpl->movement = movement;
     mImpl->lastPos = point;
 }
@@ -61,6 +100,8 @@ void MayaCamera::mouseDrag(atlas::math::Point2 const& point)
 {
     USING_ATLAS_MATH_NS;
     USING_GLM_NS;
+
+	if (bIsPlaying) return; // lock camera controls if animation is playing
 
     float deltaX = point.x - mImpl->lastPos.x;
     float deltaY = point.y - mImpl->lastPos.y;
@@ -104,5 +145,25 @@ void MayaCamera::resetCamera()
 
 atlas::math::Matrix4 MayaCamera::getCameraMatrix()
 {
-    return mImpl->dollyMatrix * mImpl->trackMatrix * mImpl->tumbleMatrix;
+	if (bIsPlaying) return mImpl->positionMatrix * mImpl->rotationMatrix;
+	else			return mImpl->dollyMatrix * mImpl->trackMatrix * mImpl->tumbleMatrix;
+}
+
+atlas::math::Vector MayaCamera::getHermitePos(int indexStartAt, float t, float tangentSize)
+{
+	USING_ATLAS_MATH_NS;
+	if (waypoints.size() < 4) return Vector(0.f, 0.f, 0.f);
+
+	float t2 = t*t;
+	float t3 = t2*t;
+
+	Vector m0vec = (waypoints[(indexStartAt + 1) % waypoints.size()] - waypoints[(waypoints.size() + indexStartAt - 1) % waypoints.size()]);
+	Vector m1vec = (waypoints[(indexStartAt + 2) % waypoints.size()] - waypoints[indexStartAt]);
+
+	Vector p0 = (2.f*t3 - 3*t2 + 1)*waypoints[indexStartAt];
+	Vector m0 = (t3 - 2.f*t2 + t)*tangentSize*m0vec;
+	Vector p1 = (-2.f*t3 + 3.f*t2)*waypoints[(indexStartAt + 1) % waypoints.size()];
+	Vector m1 = (t3 - t2)*tangentSize*m1vec;
+
+	return p0 + m0 + p1 + m1;
 }
