@@ -1,31 +1,25 @@
 # Spring Simulation - Cloth Mesh
 
-## Assignment 1 for Computer Animation at UVic - Evan N.
+## Assignment 2 for Computer Animation at UVic - Evan N.
 
 Created using the atlas framework developed by Mauricio A Rovira Galvez
 
-The scene contains 2 cubes: one with a piston spring and one with an angular spring. The scene and the spring constraints are implemented in 3D rather than 2D.
+The scene contains a cloth mesh and a camera which runs on a spline when you push "play". It makes use of up to 12 springs per vertex, depending on vertex position.
 
-I left a debug statement that spits out the cubes positions. I thought it might be good to have.
+Cloth system rundown:
 
-Spring system rundown:
+### Cloth
+Inherits from the atlas Geometry class. Updates a 2D vector array of vertex positions based on the sum of each attached spring's forces. Supports varied position, number of vertices, and "pinning mode". The last determines which vertices remain stationary during simulation.
 
-### Cube
-Inherits from the atlas Geometry class. Updates its position based on what its ObjectController tells it.
-
-### ObjectController
-A controller to handle object movement. Has an update function which returns a vector to be added to an object's position.
-Movement can be added in 3 ways:
-addMove(): flat amount of movement to be carried out next frame
-addVelocity(): adds a certain amount of constant velocity to the controller
-addAccel(): adds a certain amount of constant acceleration to the controller
+### MayaCamera
+The MayaCamera from the labs, only with now when play is pressed, user control is taken away and it runs on a spline path defined by a vector array of waypoints and transition durations. The waypoint loops from the final position to the starting position indefinitely (closed loop hermite spline).
 
 ### PistonSpring
-A constraint which holds the spring parameters. GetForce() takes the position of two objects and their velocities. Returns a force vector.
+Same as the piston spring from assignment 1.
 
-### AngularSpring
-A constraint which holds the spring parameters. GetForce takes the position of an object, its velocity, and an anchor. Returns a force vector.
+### ClothScene
+Defines cloth object parameters and waypoint locations and durations. Otherwise doesn't do much.
 
-The spring constraints are handled in sceneUpdate(). The ObjectController is handled in updateGeometry().
+The cloth updates a vertex array and then builds the vertex face buffer in updateGeometry(), sending it to opengl via opengl's glBufferData.
 
-As a word of caution, AngularSpring uses some janky vector math... accurate! but janky. I explained it in comments.
+Tested to run smoothly on this computer at 25x25 grid of vertices.
